@@ -1,80 +1,41 @@
 // import './styles.css'
 
-/*
-class ChessBoard {
-  constructor() {
+let pathToEnd = [];
+
+function knightMoves(startCoordinates, endCoordinates) {
+  let allNodePossibleMoves = [];
+  allNodePossibleMoves.push([startCoordinates[0] - 1, startCoordinates[1] - 2]);
+  allNodePossibleMoves.push([startCoordinates[0] - 2, startCoordinates[1] - 1]);
+  allNodePossibleMoves.push([startCoordinates[0] - 2, startCoordinates[1] + 1]);
+  allNodePossibleMoves.push([startCoordinates[0] - 1, startCoordinates[1] + 2]);
+  allNodePossibleMoves.push([startCoordinates[0] + 1, startCoordinates[1] + 2]);
+  allNodePossibleMoves.push([startCoordinates[0] + 2, startCoordinates[1] + 1]);
+  allNodePossibleMoves.push([startCoordinates[0] + 2, startCoordinates[1] - 1]);
+  allNodePossibleMoves.push([startCoordinates[0] + 1, startCoordinates[1] - 2]);
+
+  let allVALIDPossibleMoves = [];
+  for (let i = 0; i < allNodePossibleMoves.length; i++) {
+    if ((allNodePossibleMoves[i][0] >= 0 && allNodePossibleMoves[i][0] < 8) &&
+        (allNodePossibleMoves[i][1] >= 0 && allNodePossibleMoves[i][1] < 8)) {
+      allVALIDPossibleMoves.push(allNodePossibleMoves[i]);
+    };
   };
 
-  #board = [];
-  #rows = [0,1,2,3,4,5,6,7];
-  #columns = [0,1,2,3,4,5,6,7];
-
-  createBoard() {
-    let rowIndex = 0;
-    let columnIndex = 0;
-    let rowPointer = this.#rows[rowIndex];
-    let columnPointer = this.#columns[columnIndex];
-
-    const changeRowAndColumn = () => {
-      rowPointer = this.#rows[rowIndex];
-      columnPointer = this.#columns[columnIndex];
-    };
-
-    let i = 0;
-    const rowsXcolumns = this.#rows.length * this.#columns.length;
-    while (i < rowsXcolumns) {
-      if (columnIndex === 8) {
-        rowIndex++;
-        columnIndex = 0;
-        changeRowAndColumn();
-      };
-
-      this.#board[[rowPointer, columnPointer]] = null;
-
-      i++
-      columnIndex++
-      changeRowAndColumn();
-    };
-    console.log(this.#board);
-  }
-
-  createKnight() {
-    console.log(this.#board[[2,3]]);
-  }
-} 
-
-const test1 = new ChessBoard;
-test1.createBoard();
-test1.createKnight();
-*/
-
-function createListToStorePossibleMoves() {
-  let vertices = [0,1,2,3,4,5,6,7];
-
-  let possibleMoves = [];
-
-  let i = 0;
-  while (i < vertices.length) {
-    possibleMoves[i] = [];
-    i++;
+  if (allVALIDPossibleMoves.length === 0) {
+    throw new Error ("The knight cannot reach that sqare!");
   };
 
-  return {
-    possibleMoves,
-  }
+  for (let j = 0; j < allVALIDPossibleMoves.length; j++) {
+    if (String(allVALIDPossibleMoves[j]) === String(endCoordinates)) {
+      break;
+    };
+  };
+
+  pathToEnd.push([startCoordinates]);
+  pathToEnd[startCoordinates] = [allVALIDPossibleMoves];
+
+  console.log(pathToEnd);
 };
-const listOfPossibleMoves = createListToStorePossibleMoves();
 
+console.log(knightMoves([0,0], [3, 3]));
 
-function createKnight(row, column) {
-  if (row < 0 || row > 7 || column < 0 || column > 7) {
-    throw new Error("The knight possition is invalid");
-  };
-
-  listOfPossibleMoves.possibleMoves[row][column] = "knight";
-}
-const myKnight = createKnight(1,5);
-
-
-
-console.log(listOfPossibleMoves.possibleMoves);
