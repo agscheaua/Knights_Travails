@@ -1,10 +1,15 @@
 // import './styles.css'
 
 function knightMoves(startCoordinates, endCoordinates) {
+
+  // this evaluate to true if the start edge is === to the end edge searched;
+
   if (String(startCoordinates) === String(endCoordinates)) {
     return String([startCoordinates]);
   };
   
+  // get all possible, VALID moves we can make from a position, and store them as strings;
+
   function getAllPossibleMoves(currentLocation) {
     
     let allPossibleMoves = [];
@@ -28,118 +33,80 @@ function knightMoves(startCoordinates, endCoordinates) {
     return allVALIDPossibleMoves;
   };
   const allPossibleMoves = getAllPossibleMoves(startCoordinates);
-  console.log(allPossibleMoves);
+
+  // variables that store the visited edges and the queue in witch order we evaluate 
+  // each edge(node);
 
   let nodesToBeEval = [];
-  let visitedNodes = [];
+  let visitedNodes = [String(startCoordinates)];
+  let pathTillEnd = [startCoordinates,];
+  let nodeAndChildMap = new Map();
+
+  nodeAndChildMap.set(String(startCoordinates), [...allPossibleMoves]);
+  console.log(nodeAndChildMap);
+
+  // we push in the queue array, the first valid possible moves we can make from the startCoordinates
+  // position;
 
   for (let i = 0; i < allPossibleMoves.length; i++) {
     nodesToBeEval.push(allPossibleMoves[i]);
   };
   console.log(nodesToBeEval);
 
-  let loopBreaker = 0
-  while(nodesToBeEval.length !== 0) {
-    loopBreaker++
-    if (loopBreaker > 30) {
-      console.log("force break");
-      break;
-    };
+  // evaluate all the nodes in the queue, break is we find the endCoordinates, skip those alredy eval nodes,
+  // push uneval nodes in the array of visited and eval them;
 
+  while(nodesToBeEval.length !== 0) {
     if (nodesToBeEval[0] === String(endCoordinates)) {
       console.log("endCoord find");
       break;
     } else if (nodesToBeEval[0] !== String(endCoordinates)) {
-        console.log("....")
-    }
+        if (visitedNodes.includes(nodesToBeEval[0]) === true) {
+          nodesToBeEval.shift();
+          continue;
+        } else if (visitedNodes.includes(nodesToBeEval[0]) === false) {
+            const arrayFromString = Array.from(nodesToBeEval[0]);
 
+            let currNodeEdge = [];
+            currNodeEdge.push(Number(arrayFromString[0]));
+            currNodeEdge.push(Number(arrayFromString[2]));
 
-  };
+            const allPossibleMovesChildNode = getAllPossibleMoves(currNodeEdge);
 
-
-  /*
-  let visitedNodes = [];
-  let queueOfNodeToBeVisited = [];
-
-  for (let i = 0; i < initialMoves.length; i++) {
-    queueOfNodeToBeVisited.push(initialMoves[i]);
-  };
-
-  function checkIfNodeIsEndCoord(node) {
-    if (node === String(endCoordinates)) return true;
-    return false;
-  };
-
-  function checkIfNodeWasVisited(node) {
-    if (visitedNodes.includes(node)) return true;
-    return false;
-  };
-
-  function enqueueNodeChildren(node) {
-    const nodeChildren = getAllPossibleMoves(node);
-    for (let i = 0; i < nodeChildren.length; i++) {
-      if (checkIfNodeWasVisited(nodeChildren[i]) === true) continue;
-      else {
-        queueOfNodeToBeVisited.push(nodeChildren[i]);
-      };
-    };
-  };
-
-  function evaluateNodes() {
-    for (let i = 0; queueOfNodeToBeVisited.length !== 0; i++) {
-      if (checkIfNodeIsEndCoord(queueOfNodeToBeVisited[0]) === true) break;
-      if (checkIfNodeWasVisited(queueOfNodeToBeVisited[0]) === true) {
-        continue;
-      } else {
-        visitedNodes.push(queueOfNodeToBeVisited[0]);
-      };
-      enqueueNodeChildren(queueOfNodeToBeVisited[0]);
-      queueOfNodeToBeVisited.unshift();
-    };  
-  };
-  evaluateNodes();
-  */
-
-
-  /*
-  let queueOfNodeToBeEval = [];
-  for (let i = 0; i < possibleMoves.length; i++) {
-    queueOfNodeToBeEval.push(possibleMoves[i]);
-  };
-  
-  let alreadyEvalNode = [];
-  function evaluateNodes(currMoves) {
-    for (let i = 0; queueOfNodeToBeEval !== 0; i++) {
-      if (String(queueOfNodeToBeEval[i]) === String(endCoordinates)) {
-        break;
-      };
-      if (String(queueOfNodeToBeEval[i]) !== String(endCoordinates)) {
-        if (alreadyEvalNode.length === 0) {
-          alreadyEvalNode.push(String(queueOfNodeToBeEval[i]));
-        } else {
-            if (alreadyEvalNode.includes(String(queueOfNodeToBeEval[i]))) {
-              continue;
-            } else {
-              alreadyEvalNode.push(String(queueOfNodeToBeEval[i]))
+            nodeAndChildMap.set(String(currNodeEdge), [...allPossibleMovesChildNode]);
+            
+            let endFinded = false;
+            for (let i = 0; i < allPossibleMovesChildNode.length; i++) {
+              if (allPossibleMovesChildNode[i] === String(endCoordinates)) {
+                pathTillEnd.push(endCoordinates);  
+                endFinded = true;
+                break;
+              };
             };
+
+            if (endFinded === true) break;
+
+            for (let i = 0; i < allPossibleMovesChildNode.length; i++) {
+              if (visitedNodes.includes(allPossibleMovesChildNode[i]) === true) continue;
+              if (visitedNodes.includes(allPossibleMovesChildNode[i]) === false) {
+                nodesToBeEval.push(String(allPossibleMovesChildNode[i]));
+              };
+            };
+
+            visitedNodes.push(nodesToBeEval[0]);
+            nodesToBeEval.shift();
         };
       };
-      const possibleMovesOfCurrentNode = getAllPossibleMoves(queueOfNodeToBeEval[0]);
-      for (let j = 0; j < possibleMovesOfCurrentNode.length; i++) {
-        queueOfNodeToBeEval.push(possibleMovesOfCurrentNode[j]);
-      };
-      
-      queueOfNodeToBeEval.unshift();
 
-      console.log(queueOfNodeToBeEval);
-    };
   };
-  evaluateNodes()
-  */
+
+  console.log(visitedNodes);
+  console.log(nodesToBeEval);
+  console.log(pathTillEnd);
+  console.log(nodeAndChildMap);
+  console.log(nodeAndChildMap.values());
 
 };
 
-console.log(knightMoves([0, 0], [3, 3]));
-
-
+console.log(knightMoves([0,0],[7,7]));
 
