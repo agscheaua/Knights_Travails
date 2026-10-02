@@ -1,61 +1,36 @@
 // import './styles.css'
 
 function knightMoves(startCoordinates, endCoordinates) {
-
-  // this evaluate to true if the start edge is === to the end edge searched;
-
   if (String(startCoordinates) === String(endCoordinates)) {
     return String([startCoordinates]);
   };
   
-  // get all possible, VALID moves we can make from a position, and store them as strings;
-
-  function getAllPossibleMoves(currentLocation) {
-    
-    let allPossibleMoves = [];
-    allPossibleMoves.push([currentLocation[0] - 1, currentLocation[1] - 2]);
-    allPossibleMoves.push([currentLocation[0] - 2, currentLocation[1] - 1]);
-    allPossibleMoves.push([currentLocation[0] - 2, currentLocation[1] + 1]);
-    allPossibleMoves.push([currentLocation[0] - 1, currentLocation[1] + 2]);
-    allPossibleMoves.push([currentLocation[0] + 1, currentLocation[1] + 2]);
-    allPossibleMoves.push([currentLocation[0] + 2, currentLocation[1] + 1]);
-    allPossibleMoves.push([currentLocation[0] + 2, currentLocation[1] - 1]);
-    allPossibleMoves.push([currentLocation[0] + 1, currentLocation[1] - 2]);
-
-    let allVALIDPossibleMoves = [];
-    for (let i = 0; i < allPossibleMoves.length; i++) {
-      if ((allPossibleMoves[i][0] >= 0 && allPossibleMoves[i][0] < 8) &&
-          (allPossibleMoves[i][1] >= 0 && allPossibleMoves[i][1] < 8)) {
-        allVALIDPossibleMoves.push(String(allPossibleMoves[i]));
-      };
-    };
-
-    return allVALIDPossibleMoves;
-  };
   const allPossibleMoves = getAllPossibleMoves(startCoordinates);
-
-  // variables that store the visited edges and the queue in witch order we evaluate 
-  // each edge(node);
-
+  
+  let visitedNodes = [
+    ["start", String(startCoordinates)]
+  ];
   let nodesToBeEval = [];
-  let visitedNodes = [String(startCoordinates)];
-  let pathTillEnd = [startCoordinates,];
-  let nodeAndChildMap = new Map();
+  let pathTillTheEnd = [];
 
-  nodeAndChildMap.set(String(startCoordinates), [...allPossibleMoves]);
-  console.log(nodeAndChildMap);
+  nodesToBeEval.push([String(startCoordinates), ...allPossibleMoves]);
 
-  // we push in the queue array, the first valid possible moves we can make from the startCoordinates
-  // position;
-
-  for (let i = 0; i < allPossibleMoves.length; i++) {
-    nodesToBeEval.push(allPossibleMoves[i]);
-  };
   console.log(nodesToBeEval);
+  console.log(visitedNodes);
 
-  // evaluate all the nodes in the queue, break is we find the endCoordinates, skip those alredy eval nodes,
-  // push uneval nodes in the array of visited and eval them;
+  let i = 0;
+  while(nodesToBeEval.length !== 0) {
+    i++;
+    if (i === 50) break;
 
+    if (nodesToBeEval[0].includes(String(endCoordinates))) {
+      console.log(1);
+    };
+    
+
+  };
+
+  /*
   while(nodesToBeEval.length !== 0) {
     if (nodesToBeEval[0] === String(endCoordinates)) {
       console.log("endCoord find");
@@ -72,14 +47,13 @@ function knightMoves(startCoordinates, endCoordinates) {
             currNodeEdge.push(Number(arrayFromString[2]));
 
             const allPossibleMovesChildNode = getAllPossibleMoves(currNodeEdge);
-
-            nodeAndChildMap.set(String(currNodeEdge), [...allPossibleMovesChildNode]);
-            
+ 
             let endFinded = false;
             for (let i = 0; i < allPossibleMovesChildNode.length; i++) {
-              if (allPossibleMovesChildNode[i] === String(endCoordinates)) {
-                pathTillEnd.push(endCoordinates);  
+              if (allPossibleMovesChildNode[i] === String(endCoordinates)) {  
                 endFinded = true;
+                console.log("will break");
+                visitedNodes.push(nodesToBeEval[0]);
                 break;
               };
             };
@@ -97,16 +71,37 @@ function knightMoves(startCoordinates, endCoordinates) {
             nodesToBeEval.shift();
         };
       };
-
   };
+  */
+
 
   console.log(visitedNodes);
   console.log(nodesToBeEval);
-  console.log(pathTillEnd);
-  console.log(nodeAndChildMap);
-  console.log(nodeAndChildMap.values());
 
 };
 
-console.log(knightMoves([0,0],[7,7]));
+function getAllPossibleMoves(currentLocation) {
+    
+  let allPossibleMoves = [];
+  allPossibleMoves.push([currentLocation[0] - 1, currentLocation[1] - 2]);
+  allPossibleMoves.push([currentLocation[0] - 2, currentLocation[1] - 1]);
+  allPossibleMoves.push([currentLocation[0] - 2, currentLocation[1] + 1]);
+  allPossibleMoves.push([currentLocation[0] - 1, currentLocation[1] + 2]);
+  allPossibleMoves.push([currentLocation[0] + 1, currentLocation[1] + 2]);
+  allPossibleMoves.push([currentLocation[0] + 2, currentLocation[1] + 1]);
+  allPossibleMoves.push([currentLocation[0] + 2, currentLocation[1] - 1]);
+  allPossibleMoves.push([currentLocation[0] + 1, currentLocation[1] - 2]);
+
+  let allVALIDPossibleMoves = [];
+  for (let i = 0; i < allPossibleMoves.length; i++) {
+    if ((allPossibleMoves[i][0] >= 0 && allPossibleMoves[i][0] < 8) &&
+        (allPossibleMoves[i][1] >= 0 && allPossibleMoves[i][1] < 8)) {
+      allVALIDPossibleMoves.push(String(allPossibleMoves[i]));
+    };
+  };
+
+  return allVALIDPossibleMoves;
+};
+
+knightMoves([0,0],[1,2]);
 
