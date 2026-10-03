@@ -14,21 +14,116 @@ function knightMoves(startCoordinates, endCoordinates) {
   let pathTillTheEnd = [];
 
   nodesToBeEval.push([String(startCoordinates), ...allPossibleMoves]);
-
-  console.log(nodesToBeEval);
-  console.log(visitedNodes);
+  pathTillTheEnd.push(String(startCoordinates));
 
   let i = 0;
-  while(nodesToBeEval.length !== 0) {
+  while (nodesToBeEval.length !== 0) {
     i++;
-    if (i === 50) break;
+    if (i === 100) {
+      console.log("force break");
+      break;
+    };
 
     if (nodesToBeEval[0].includes(String(endCoordinates))) {
-      console.log(1);
+      visitedNodes.push([...nodesToBeEval[0]]);
+      nodesToBeEval = [];
+      pathTillTheEnd.push(String(endCoordinates));
+      break;
+    } else {
+
+        for (let i = 1; i < nodesToBeEval[0].length; i++) {
+          const arrayFromStrNode = Array.from(nodesToBeEval[0][i]);
+          let currNodeArrayFromStr = [];
+          currNodeArrayFromStr.push(Number(arrayFromStrNode[0]));
+          currNodeArrayFromStr.push(Number(arrayFromStrNode[2]));
+
+          checkVisitedNodesLoop:
+          for (let i =  0; i < visitedNodes.length; i++) {
+            if (visitedNodes[i].includes(String(currNodeArrayFromStr))) {
+              console.log("continue");
+              nodesToBeEval.shift();
+              continue checkVisitedNodesLoop;
+          };
+          }
+          
+               
+          const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
+              
+         
+
+
+
+
+            };
+    }
+
+
+
+
+
+  };
+
+
+  console.log(visitedNodes);
+  console.log(nodesToBeEval);
+  console.log(pathTillTheEnd);
+
+  /*
+  let i = 0;
+  endCoordFinded: 
+  while(nodesToBeEval.length !== 0) {
+    i++;
+    if (i === 100) {
+      console.log("force break");
+      break;
     };
+
+    if (nodesToBeEval[0].includes(String(endCoordinates))) {
+      visitedNodes.push([...nodesToBeEval[0]]);
+      pathTillTheEnd.push(String(endCoordinates));
+      nodesToBeEval = [];
+    } else if (!(nodesToBeEval[0].includes(String(endCoordinates)))) {
+        if (visitedNodes.includes(nodesToBeEval[0])) {
+          console.log("continue");
+          nodesToBeEval.shift();
+          continue;
+        } else {
+            for (let i = 1; i < nodesToBeEval[0].length; i++) {
+              const arrayFromStrNode = Array.from(nodesToBeEval[0][i]);
+              let currNodeArrayFromStr = [];
+              currNodeArrayFromStr.push(Number(arrayFromStrNode[0]));
+              currNodeArrayFromStr.push(Number(arrayFromStrNode[2]));
+
+              if (visitedNodes.includes(String(currNodeArrayFromStr))) {
+                console.log("continue");
+                nodesToBeEval.shift();
+                continue;
+              };
+               
+              const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
+              
+              if (allPossibleMovesOfCurrNode.includes(String(endCoordinates))) {
+                pathTillTheEnd.push(nodesToBeEval[0][i]);
+                pathTillTheEnd.push(String(endCoordinates));
+                nodesToBeEval = [];
+                break endCoordFinded;
+              } else {
+                nodesToBeEval.push(...allPossibleMovesOfCurrNode);
+                visitedNodes.push([String(currNodeArrayFromStr), ...allPossibleMovesOfCurrNode]);
+                nodesToBeEval.shift();
+              };
+
+
+
+
+            };
+        };
+
+      };
     
 
   };
+  */
 
   /*
   while(nodesToBeEval.length !== 0) {
@@ -73,10 +168,6 @@ function knightMoves(startCoordinates, endCoordinates) {
       };
   };
   */
-
-
-  console.log(visitedNodes);
-  console.log(nodesToBeEval);
 
 };
 
