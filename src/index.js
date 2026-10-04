@@ -5,172 +5,66 @@ function knightMoves(startCoordinates, endCoordinates) {
     return String([startCoordinates]);
   };
   
-  const allPossibleMoves = getAllPossibleMoves(startCoordinates);
+  const allPossibleMovesOfTheStartCoord = getAllPossibleMoves(startCoordinates);
   
-  let visitedNodes = [
-    [String(startCoordinates), ...allPossibleMoves]
-  ];
+  let childAndParentVisitedNodesMap = new Map();
+  for (let i = 0; i < allPossibleMovesOfTheStartCoord.length; i++) {
+    childAndParentVisitedNodesMap.set(allPossibleMovesOfTheStartCoord[i], String(startCoordinates));
+  };
+
+  if (childAndParentVisitedNodesMap.has(String(endCoordinates))) {
+    console.log("end finded");
+    return;
+  };
+
   let nodesToBeEval = [];
-  let pathTillTheEnd = [];
+  nodesToBeEval.push(...allPossibleMovesOfTheStartCoord);
 
-  nodesToBeEval.push(...allPossibleMoves);
-  
-  searchNodesToBeEval:
+  let alreadyEvalNodes = [];
+  alreadyEvalNodes.push(String(startCoordinates));
+
+  let i = 0;
+  pathSearcherLoop:
   while (nodesToBeEval.length !== 0) {
-
-    if (nodesToBeEval.includes(String(endCoordinates))) {
-      break searchNodesToBeEval;
+    i++;
+    if (i === 150) {
+      console.log("force breaking")
+      break
     };
 
-    for (let i = 0; i < visitedNodes.length; i++) {
-      if (visitedNodes[i][0] === nodesToBeEval[0]) {
-        nodesToBeEval.shift();
-        continue searchNodesToBeEval;
-      };
-    };
-
-    const arrayFromStrNode = Array.from(nodesToBeEval[0]);
+    const arrayOfNrFromStrNode = Array.from(nodesToBeEval[0]);
     let currNodeArrayFromStr = [];
-    currNodeArrayFromStr.push(Number(arrayFromStrNode[0]));
-    currNodeArrayFromStr.push(Number(arrayFromStrNode[2]));
-           
+    currNodeArrayFromStr.push(Number(arrayOfNrFromStrNode[0]));
+    currNodeArrayFromStr.push(Number(arrayOfNrFromStrNode[2]));
+
+    if (alreadyEvalNodes.includes(String(currNodeArrayFromStr))) {
+      nodesToBeEval.shift();
+      continue;
+    };
+
     const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
 
-    visitedNodes.push([String(currNodeArrayFromStr), ...allPossibleMovesOfCurrNode]);
-    
-    for (let i = 0; i < allPossibleMovesOfCurrNode.length; i++) {
-      if (nodesToBeEval.includes(allPossibleMovesOfCurrNode[i])) {
+    for (let j = 0; j < allPossibleMovesOfCurrNode.length; j++) {
+      childAndParentVisitedNodesMap.set(allPossibleMovesOfCurrNode[j], String(currNodeArrayFromStr));
+
+      if (childAndParentVisitedNodesMap.has(String(endCoordinates))) {
+        break pathSearcherLoop;
+      };
+
+      if (alreadyEvalNodes.includes(allPossibleMovesOfCurrNode[j])) {
         continue;
-      };
-      nodesToBeEval.push(allPossibleMovesOfCurrNode[i]);
+      }
+      nodesToBeEval.push(allPossibleMovesOfCurrNode[j]);
     };
 
+    alreadyEvalNodes.push(String(currNodeArrayFromStr));
     nodesToBeEval.shift();
+
   };
 
-  if (visitedNodes[visitedNodes.length-1].includes(String(endCoordinates))) {
-    pathTillTheEnd.unshift(String(endCoordinates));
-    pathTillTheEnd.unshift(visitedNodes[visitedNodes.length-1][0]);
-  };
-
-  let i = 0;
-  while (pathTillTheEnd[0] !== String(startCoordinates)) {
-    i++
-    if (i === 100) break;
-
-    for (let i = 0; i < visitedNodes.length; i++) {
-      if (visitedNodes[i].includes(pathTillTheEnd[0])) {
-        console.log(visitedNodes[i]);
-        pathTillTheEnd.unshift(visitedNodes[i][0]);
-        break;
-      };
-    };
-  };
-
-  console.log(visitedNodes);
+  console.log(childAndParentVisitedNodesMap);
   console.log(nodesToBeEval);
-  console.log(pathTillTheEnd);
-
-  /*
-  let i = 0;
-  endCoordFinded: 
-  while(nodesToBeEval.length !== 0) {
-    i++;
-    if (i === 100) {
-      console.log("force break");
-      break;
-    };
-
-    if (nodesToBeEval[0].includes(String(endCoordinates))) {
-      visitedNodes.push([...nodesToBeEval[0]]);
-      pathTillTheEnd.push(String(endCoordinates));
-      nodesToBeEval = [];
-    } else if (!(nodesToBeEval[0].includes(String(endCoordinates)))) {
-        if (visitedNodes.includes(nodesToBeEval[0])) {
-          console.log("continue");
-          nodesToBeEval.shift();
-          continue;
-        } else {
-            for (let i = 1; i < nodesToBeEval[0].length; i++) {
-              const arrayFromStrNode = Array.from(nodesToBeEval[0][i]);
-              let currNodeArrayFromStr = [];
-              currNodeArrayFromStr.push(Number(arrayFromStrNode[0]));
-              currNodeArrayFromStr.push(Number(arrayFromStrNode[2]));
-
-              if (visitedNodes.includes(String(currNodeArrayFromStr))) {
-                console.log("continue");
-                nodesToBeEval.shift();
-                continue;
-              };
-               
-              const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
-              
-              if (allPossibleMovesOfCurrNode.includes(String(endCoordinates))) {
-                pathTillTheEnd.push(nodesToBeEval[0][i]);
-                pathTillTheEnd.push(String(endCoordinates));
-                nodesToBeEval = [];
-                break endCoordFinded;
-              } else {
-                nodesToBeEval.push(...allPossibleMovesOfCurrNode);
-                visitedNodes.push([String(currNodeArrayFromStr), ...allPossibleMovesOfCurrNode]);
-                nodesToBeEval.shift();
-              };
-
-
-
-
-            };
-        };
-
-      };
-    
-
-  };
-  */
-
-  /*
-  while(nodesToBeEval.length !== 0) {
-    if (nodesToBeEval[0] === String(endCoordinates)) {
-      console.log("endCoord find");
-      break;
-    } else if (nodesToBeEval[0] !== String(endCoordinates)) {
-        if (visitedNodes.includes(nodesToBeEval[0]) === true) {
-          nodesToBeEval.shift();
-          continue;
-        } else if (visitedNodes.includes(nodesToBeEval[0]) === false) {
-            const arrayFromString = Array.from(nodesToBeEval[0]);
-
-            let currNodeEdge = [];
-            currNodeEdge.push(Number(arrayFromString[0]));
-            currNodeEdge.push(Number(arrayFromString[2]));
-
-            const allPossibleMovesChildNode = getAllPossibleMoves(currNodeEdge);
- 
-            let endFinded = false;
-            for (let i = 0; i < allPossibleMovesChildNode.length; i++) {
-              if (allPossibleMovesChildNode[i] === String(endCoordinates)) {  
-                endFinded = true;
-                console.log("will break");
-                visitedNodes.push(nodesToBeEval[0]);
-                break;
-              };
-            };
-
-            if (endFinded === true) break;
-
-            for (let i = 0; i < allPossibleMovesChildNode.length; i++) {
-              if (visitedNodes.includes(allPossibleMovesChildNode[i]) === true) continue;
-              if (visitedNodes.includes(allPossibleMovesChildNode[i]) === false) {
-                nodesToBeEval.push(String(allPossibleMovesChildNode[i]));
-              };
-            };
-
-            visitedNodes.push(nodesToBeEval[0]);
-            nodesToBeEval.shift();
-        };
-      };
-  };
-  */
+  console.log(childAndParentVisitedNodesMap.has("7,7"));
 
 };
 
@@ -198,4 +92,5 @@ function getAllPossibleMoves(currentLocation) {
 };
 
 knightMoves([0,0],[7,7]);
+
 
