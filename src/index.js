@@ -8,61 +8,64 @@ function knightMoves(startCoordinates, endCoordinates) {
   const allPossibleMoves = getAllPossibleMoves(startCoordinates);
   
   let visitedNodes = [
-    ["start", String(startCoordinates)]
+    [String(startCoordinates), ...allPossibleMoves]
   ];
   let nodesToBeEval = [];
   let pathTillTheEnd = [];
 
-  nodesToBeEval.push([String(startCoordinates), ...allPossibleMoves]);
-  pathTillTheEnd.push(String(startCoordinates));
-
-  let i = 0;
+  nodesToBeEval.push(...allPossibleMoves);
+  
+  searchNodesToBeEval:
   while (nodesToBeEval.length !== 0) {
-    i++;
-    if (i === 100) {
-      console.log("force break");
-      break;
+
+    if (nodesToBeEval.includes(String(endCoordinates))) {
+      break searchNodesToBeEval;
     };
 
-    if (nodesToBeEval[0].includes(String(endCoordinates))) {
-      visitedNodes.push([...nodesToBeEval[0]]);
-      nodesToBeEval = [];
-      pathTillTheEnd.push(String(endCoordinates));
-      break;
-    } else {
+    for (let i = 0; i < visitedNodes.length; i++) {
+      if (visitedNodes[i][0] === nodesToBeEval[0]) {
+        nodesToBeEval.shift();
+        continue searchNodesToBeEval;
+      };
+    };
 
-        for (let i = 1; i < nodesToBeEval[0].length; i++) {
-          const arrayFromStrNode = Array.from(nodesToBeEval[0][i]);
-          let currNodeArrayFromStr = [];
-          currNodeArrayFromStr.push(Number(arrayFromStrNode[0]));
-          currNodeArrayFromStr.push(Number(arrayFromStrNode[2]));
+    const arrayFromStrNode = Array.from(nodesToBeEval[0]);
+    let currNodeArrayFromStr = [];
+    currNodeArrayFromStr.push(Number(arrayFromStrNode[0]));
+    currNodeArrayFromStr.push(Number(arrayFromStrNode[2]));
+           
+    const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
 
-          checkVisitedNodesLoop:
-          for (let i =  0; i < visitedNodes.length; i++) {
-            if (visitedNodes[i].includes(String(currNodeArrayFromStr))) {
-              console.log("continue");
-              nodesToBeEval.shift();
-              continue checkVisitedNodesLoop;
-          };
-          }
-          
-               
-          const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
-              
-         
+    visitedNodes.push([String(currNodeArrayFromStr), ...allPossibleMovesOfCurrNode]);
+    
+    for (let i = 0; i < allPossibleMovesOfCurrNode.length; i++) {
+      if (nodesToBeEval.includes(allPossibleMovesOfCurrNode[i])) {
+        continue;
+      };
+      nodesToBeEval.push(allPossibleMovesOfCurrNode[i]);
+    };
 
-
-
-
-            };
-    }
-
-
-
-
-
+    nodesToBeEval.shift();
   };
 
+  if (visitedNodes[visitedNodes.length-1].includes(String(endCoordinates))) {
+    pathTillTheEnd.unshift(String(endCoordinates));
+    pathTillTheEnd.unshift(visitedNodes[visitedNodes.length-1][0]);
+  };
+
+  let i = 0;
+  while (pathTillTheEnd[0] !== String(startCoordinates)) {
+    i++
+    if (i === 100) break;
+
+    for (let i = 0; i < visitedNodes.length; i++) {
+      if (visitedNodes[i].includes(pathTillTheEnd[0])) {
+        console.log(visitedNodes[i]);
+        pathTillTheEnd.unshift(visitedNodes[i][0]);
+        break;
+      };
+    };
+  };
 
   console.log(visitedNodes);
   console.log(nodesToBeEval);
@@ -194,5 +197,5 @@ function getAllPossibleMoves(currentLocation) {
   return allVALIDPossibleMoves;
 };
 
-knightMoves([0,0],[1,2]);
+knightMoves([0,0],[7,7]);
 
