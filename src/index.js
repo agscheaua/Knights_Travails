@@ -1,5 +1,3 @@
-// import './styles.css'
-
 function knightMoves(startCoordinates, endCoordinates) {
   if (String(startCoordinates) === String(endCoordinates)) {
     return String([startCoordinates]);
@@ -8,28 +6,25 @@ function knightMoves(startCoordinates, endCoordinates) {
   const allPossibleMovesOfTheStartCoord = getAllPossibleMoves(startCoordinates);
   
   let childAndParentVisitedNodesMap = new Map();
+
   for (let i = 0; i < allPossibleMovesOfTheStartCoord.length; i++) {
     childAndParentVisitedNodesMap.set(allPossibleMovesOfTheStartCoord[i], String(startCoordinates));
-  };
-
-  if (childAndParentVisitedNodesMap.has(String(endCoordinates))) {
-    console.log("end finded");
-    return;
   };
 
   let nodesToBeEval = [];
   nodesToBeEval.push(...allPossibleMovesOfTheStartCoord);
 
-  let alreadyEvalNodes = [];
-  alreadyEvalNodes.push(String(startCoordinates));
-
-  let i = 0;
-  pathSearcherLoop:
+  loopTillQueueisEmpty:
   while (nodesToBeEval.length !== 0) {
-    i++;
-    if (i === 150) {
-      console.log("force breaking")
-      break
+    const allValuesOfParentMap = Array.from(childAndParentVisitedNodesMap.values());
+
+    if (childAndParentVisitedNodesMap.has(String(endCoordinates))) {
+      break;
+    };
+
+    if (allValuesOfParentMap.includes(nodesToBeEval[0])) {
+      nodesToBeEval.shift();
+      continue;
     };
 
     const arrayOfNrFromStrNode = Array.from(nodesToBeEval[0]);
@@ -37,34 +32,27 @@ function knightMoves(startCoordinates, endCoordinates) {
     currNodeArrayFromStr.push(Number(arrayOfNrFromStrNode[0]));
     currNodeArrayFromStr.push(Number(arrayOfNrFromStrNode[2]));
 
-    if (alreadyEvalNodes.includes(String(currNodeArrayFromStr))) {
-      nodesToBeEval.shift();
-      continue;
-    };
-
     const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
 
     for (let j = 0; j < allPossibleMovesOfCurrNode.length; j++) {
-      if (childAndParentVisitedNodesMap.has(String(endCoordinates))) {
-        break pathSearcherLoop;
-      };
-
       if (childAndParentVisitedNodesMap.has(allPossibleMovesOfCurrNode[j])) {
+        continue;
+      };
+      
+      if (allValuesOfParentMap.includes(allPossibleMovesOfCurrNode[j])) {
         continue;
       };
 
       childAndParentVisitedNodesMap.set(allPossibleMovesOfCurrNode[j], String(currNodeArrayFromStr));
-
-      if (alreadyEvalNodes.includes(allPossibleMovesOfCurrNode[j])) {
-        continue;
+      
+      if (allPossibleMovesOfCurrNode[j] === String(endCoordinates)) {
+        break loopTillQueueisEmpty;
       };
 
       nodesToBeEval.push(allPossibleMovesOfCurrNode[j]);
     };
 
-    alreadyEvalNodes.push(String(currNodeArrayFromStr));
     nodesToBeEval.shift();
-
   };
 
   console.log(childAndParentVisitedNodesMap);
@@ -82,7 +70,7 @@ function knightMoves(startCoordinates, endCoordinates) {
     };
     if (endNode !== String(startCoordinates)) {
       pathTillNode.unshift(endNode);
-      getTheShortestPath(childAndParentVisitedNodesMap, endNode);
+      getTheShortestPath(theMap, endNode);
     };
   };
   getTheShortestPath(childAndParentVisitedNodesMap, String(endCoordinates));
@@ -113,6 +101,4 @@ function getAllPossibleMoves(currentLocation) {
   return allVALIDPossibleMoves;
 };
 
-knightMoves([3,3],[0,0]);
-
-
+knightMoves([0,0],[7,7]);
