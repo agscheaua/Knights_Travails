@@ -2,6 +2,14 @@ function knightMoves(startCoordinates, endCoordinates) {
   if (String(startCoordinates) === String(endCoordinates)) {
     return String([startCoordinates]);
   };
+
+  let unorderedCoordinates = [...startCoordinates, ...endCoordinates];
+  
+  for (let i = 0; i < unorderedCoordinates.length; i++) {
+    if (unorderedCoordinates[i] < 0 || unorderedCoordinates[i] > 7) {
+      throw new Error("The coordinates are outside the chess board.");
+    };
+  };
   
   const allPossibleMovesOfTheStartCoord = getAllPossibleMoves(startCoordinates);
   
