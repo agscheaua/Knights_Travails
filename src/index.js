@@ -16,15 +16,8 @@ function knightMoves(startCoordinates, endCoordinates) {
 
   loopTillQueueisEmpty:
   while (nodesToBeEval.length !== 0) {
-    const allValuesOfParentMap = Array.from(childAndParentVisitedNodesMap.values());
-
     if (childAndParentVisitedNodesMap.has(String(endCoordinates))) {
       break;
-    };
-
-    if (allValuesOfParentMap.includes(nodesToBeEval[0])) {
-      nodesToBeEval.shift();
-      continue;
     };
 
     const arrayOfNrFromStrNode = Array.from(nodesToBeEval[0]);
@@ -34,17 +27,13 @@ function knightMoves(startCoordinates, endCoordinates) {
 
     const allPossibleMovesOfCurrNode = getAllPossibleMoves(currNodeArrayFromStr);
 
-    for (let j = 0; j < allPossibleMovesOfCurrNode.length; j++) {
+    for (let j = 0; j < allPossibleMovesOfCurrNode.length; j++) {      
       if (childAndParentVisitedNodesMap.has(allPossibleMovesOfCurrNode[j])) {
-        continue;
-      };
-      
-      if (allValuesOfParentMap.includes(allPossibleMovesOfCurrNode[j])) {
         continue;
       };
 
       childAndParentVisitedNodesMap.set(allPossibleMovesOfCurrNode[j], String(currNodeArrayFromStr));
-      
+     
       if (allPossibleMovesOfCurrNode[j] === String(endCoordinates)) {
         break loopTillQueueisEmpty;
       };
@@ -52,11 +41,8 @@ function knightMoves(startCoordinates, endCoordinates) {
       nodesToBeEval.push(allPossibleMovesOfCurrNode[j]);
     };
 
-    nodesToBeEval.shift();
+  nodesToBeEval.shift();
   };
-
-  console.log(childAndParentVisitedNodesMap);
-  console.log(nodesToBeEval);
 
   let pathTillNode = [];
 
@@ -74,8 +60,12 @@ function knightMoves(startCoordinates, endCoordinates) {
     };
   };
   getTheShortestPath(childAndParentVisitedNodesMap, String(endCoordinates));
-
+  
+  console.log(childAndParentVisitedNodesMap);
+  console.log(nodesToBeEval);
   console.log(pathTillNode);
+
+  return pathTillNode;
 };
 
 function getAllPossibleMoves(currentLocation) {
